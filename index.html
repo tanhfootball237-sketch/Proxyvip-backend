@@ -1,774 +1,275 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>VIP PROXY BROWSER | TANH CHỨ AI</title>
-    <script>
-      // Anti-DevTools + anti-select cực mạnh
-      (function() {
-        document.addEventListener("contextmenu", e => e.preventDefault());
-        document.addEventListener("keydown", e => {
-          if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) || (e.ctrlKey && e.key === "u")) {
-            e.preventDefault();
-          }
-          if (e.ctrlKey && e.key === "s") { e.preventDefault(); return false; }
-        });
-        document.body.style.webkitUserSelect = "none";
-        document.body.style.userSelect = "none";
-      })();
-    </script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC Tools REAL | Get Source · QR · Hash · Whois · EXIF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Segoe UI', 'Poppins', 'Arial Black', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-        background: radial-gradient(circle at 10% 20%, #0b0b1f, #030318);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        position: relative;
-        overflow-x: hidden;
-      }
-
-      /* nền động VIP */
-      .vip-bg {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-      }
-      .grid-matrix {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background-image: 
-          linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 0, 255, 0.08) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: drift 30s linear infinite;
-      }
-      .glow-sphere {
-        position: absolute;
-        width: 70vw;
-        height: 70vw;
-        background: radial-gradient(circle, rgba(0, 255, 255, 0.15), transparent 70%);
-        top: -30%;
-        right: -20%;
-        border-radius: 50%;
-        filter: blur(80px);
-      }
-      .glow-sphere2 {
-        position: absolute;
-        width: 60vw;
-        height: 60vw;
-        background: radial-gradient(circle, rgba(255, 0, 200, 0.12), transparent 70%);
-        bottom: -30%;
-        left: -20%;
-        border-radius: 50%;
-        filter: blur(90px);
-      }
-      .neon-lines {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: repeating-linear-gradient(0deg, rgba(0,255,255,0.05) 0px, rgba(0,255,255,0.05) 2px, transparent 2px, transparent 12px);
-      }
-
-      @keyframes drift {
-        0% { transform: translate(0, 0); }
-        100% { transform: translate(50px, 50px); }
-      }
-
-      /* container chính */
-      .browser-container {
-        width: 100%;
-        max-width: 540px;
-        position: relative;
-        z-index: 10;
-        perspective: 1200px;
-      }
-
-      .vip-card {
-        background: rgba(12, 10, 28, 0.65);
-        backdrop-filter: blur(18px);
-        border-radius: 48px;
-        padding: 30px 28px 38px;
-        box-shadow: 0 30px 50px rgba(0,0,0,0.6), 0 0 0 2px rgba(0, 255, 255, 0.2), 0 0 0 5px rgba(255, 0, 255, 0.1);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(0, 255, 255, 0.4);
-      }
-
-      /* header sang chảnh */
-      .brand {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .badge-vip {
-        display: inline-block;
-        background: linear-gradient(135deg, #ffd966, #ffb347);
-        padding: 6px 18px;
-        border-radius: 60px;
-        font-size: 12px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        color: #1a1a2e;
-        margin-bottom: 12px;
-        box-shadow: 0 0 12px rgba(255, 180, 70, 0.6);
-      }
-      h1 {
-        font-size: 2.6rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #fff, #00ffff, #ff44cc);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        text-shadow: 0 0 12px rgba(0,255,255,0.4);
-        letter-spacing: 2px;
-      }
-      .sub {
-        color: #b9c7ff;
-        font-weight: 500;
-        letter-spacing: 1px;
-        border-bottom: 1px dashed rgba(0,255,255,0.4);
-        display: inline-block;
-        padding-bottom: 4px;
-        margin-top: 6px;
-      }
-      .signature {
-        margin-top: 8px;
-        font-size: 12px;
-        font-weight: bold;
-        background: linear-gradient(90deg, #ff99cc, #66ffff);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-
-      /* IP panel đẹp */
-      .ip-panel {
-        background: rgba(0, 0, 0, 0.45);
-        border-radius: 100px;
-        padding: 12px 20px;
-        margin: 18px 0 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        border: 1px solid rgba(0, 255, 255, 0.5);
-        backdrop-filter: blur(8px);
-      }
-      .ip-label {
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 13px;
-        background: #00ffff20;
-        padding: 4px 12px;
-        border-radius: 50px;
-        color: #aaffff;
-      }
-      .ip-value {
-        font-family: monospace;
-        font-size: 1.3rem;
-        font-weight: 800;
-        letter-spacing: 1px;
-        background: linear-gradient(145deg, #e0e0ff, #ffffff);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        text-shadow: 0 0 5px cyan;
-      }
-      .refresh-ip {
-        background: rgba(255,255,255,0.1);
-        border: none;
-        padding: 6px 12px;
-        border-radius: 40px;
-        color: cyan;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .refresh-ip:hover {
-        background: cyan;
-        color: black;
-        box-shadow: 0 0 12px cyan;
-      }
-
-      /* thông báo quan trọng */
-      .warning-note {
-        background: rgba(255, 70, 110, 0.2);
-        border-left: 4px solid #ff3366;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 13px;
-        margin-bottom: 25px;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        backdrop-filter: blur(4px);
-      }
-
-      /* trường nhập key */
-      .input-chic {
-        margin-bottom: 28px;
-      }
-      .input-group {
-        position: relative;
-      }
-      .input-group input {
-        width: 100%;
-        background: rgba(0,0,0,0.6);
-        border: 2px solid rgba(0, 255, 255, 0.5);
-        border-radius: 60px;
-        padding: 18px 24px;
-        font-size: 16px;
-        color: white;
-        font-weight: 500;
-        outline: none;
-        transition: all 0.25s;
-        letter-spacing: 1px;
-      }
-      .input-group input:focus {
-        border-color: #ff44cc;
-        box-shadow: 0 0 20px rgba(255, 68, 204, 0.5);
-        background: rgba(0,0,0,0.8);
-      }
-      .input-group label {
-        position: absolute;
-        left: 24px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: transparent;
-        padding: 0 6px;
-        transition: 0.2s;
-        pointer-events: none;
-        color: #9ca3ff;
-        font-weight: 600;
-      }
-      .input-group input:focus + label,
-      .input-group input:not(:placeholder-shown) + label {
-        top: 0px;
-        transform: translateY(-50%);
-        font-size: 12px;
-        background: #0a0a2e;
-        color: cyan;
-        border-radius: 20px;
-        padding: 0 8px;
-      }
-
-      /* button hành động */
-      .action-row {
-        display: flex;
-        gap: 14px;
-        margin: 12px 0 20px;
-      }
-      .btn-primary {
-        flex: 1;
-        background: linear-gradient(95deg, #00c6ff, #0072ff);
-        border: none;
-        border-radius: 60px;
-        padding: 14px 8px;
-        font-weight: 900;
-        font-size: 1rem;
-        color: white;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: 0.2s;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 6px 14px rgba(0, 114, 255, 0.3);
-      }
-      .btn-primary::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: 0.5s;
-      }
-      .btn-primary:hover::before { left: 100%; }
-      .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-      .btn-clear {
-        background: rgba(220, 38, 38, 0.7);
-        border: 1px solid #ff5e7e;
-        border-radius: 60px;
-        width: 56px;
-        cursor: pointer;
-        color: white;
-        font-weight: bold;
-        backdrop-filter: blur(4px);
-        transition: 0.2s;
-      }
-      .btn-clear:hover { background: #e11d48; box-shadow: 0 0 12px #ff3366; }
-
-      /* nút duyệt IP thủ công (BẮT BUỘC) */
-      .manual-browse-section {
-        background: rgba(0,0,0,0.5);
-        border-radius: 36px;
-        padding: 18px 20px;
-        margin-top: 18px;
-        text-align: center;
-        border: 1px solid rgba(255, 215, 0, 0.5);
-        animation: borderPulse 2s infinite;
-      }
-      @keyframes borderPulse {
-        0% { border-color: rgba(255, 215, 0, 0.3); box-shadow: 0 0 0px rgba(255,215,0,0);}
-        50% { border-color: rgba(255, 215, 0, 0.9); box-shadow: 0 0 12px rgba(255,215,0,0.5);}
-        100% { border-color: rgba(255, 215, 0, 0.3);}
-      }
-      .browse-timer {
-        font-size: 2.6rem;
-        font-weight: 900;
-        font-family: monospace;
-        background: #000000aa;
-        display: inline-block;
-        padding: 4px 20px;
-        border-radius: 60px;
-        letter-spacing: 6px;
-        margin-bottom: 12px;
-        color: #facc15;
-        text-shadow: 0 0 8px gold;
-      }
-      .btn-browse {
-        background: linear-gradient(145deg, #f9a826, #f97316);
-        border: none;
-        padding: 12px 28px;
-        border-radius: 50px;
-        font-weight: 900;
-        font-size: 1.2rem;
-        color: #0c0a2a;
-        cursor: pointer;
-        transition: 0.2s;
-        width: 100%;
-        box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
-      }
-      .btn-browse:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        filter: grayscale(0.2);
-      }
-      .browse-status {
-        margin-top: 12px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #ffd966;
-      }
-
-      /* popup thông báo */
-      .toast-pop {
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%) translateY(30px);
-        background: #1e1a3aee;
-        backdrop-filter: blur(16px);
-        padding: 14px 28px;
-        border-radius: 80px;
-        color: white;
-        font-weight: bold;
-        z-index: 2000;
-        opacity: 0;
-        transition: 0.2s;
-        pointer-events: none;
-        border-left: 6px solid cyan;
-        border-right: 6px solid #ff44cc;
-        box-shadow: 0 10px 25px black;
-      }
-      .toast-pop.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0px);
-      }
+        body { background: #0a0a0a; font-family: 'Courier New', monospace; }
+        .glow-text { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+        .terminal { background: #000; border: 1px solid #0f0; box-shadow: 0 0 8px #0f0; border-radius: 12px; }
+        .btn-neon { transition: 0.2s; border: 1px solid #0ff; color: #0ff; background: transparent; border-radius: 8px; cursor: pointer; }
+        .btn-neon:hover { background: #0ff; color: #000; box-shadow: 0 0 12px #0ff; }
+        .tab-active { border-bottom: 2px solid #0f0; color: #0f0; }
+        .tab-inactive { color: #888; }
+        pre { white-space: pre-wrap; word-wrap: break-word; max-height: 300px; overflow-y: auto; }
+        .qr-box { background: white; display: inline-block; padding: 10px; border-radius: 8px; margin-top: 10px; }
     </style>
-  </head>
-  <body>
-    <div class="vip-bg">
-      <div class="grid-matrix"></div>
-      <div class="glow-sphere"></div>
-      <div class="glow-sphere2"></div>
-      <div class="neon-lines"></div>
+</head>
+<body class="text-green-400 p-4 md:p-6">
+
+<div class="max-w-6xl mx-auto">
+    <header class="flex justify-between items-center border-b border-green-500 pb-4 mb-6 flex-wrap">
+        <h1 class="text-3xl font-bold glow-text">B|B|C Tools REAL</h1>
+        <div class="text-sm text-gray-400">by : Tanh Chứ Ai</div>
+    </header>
+
+    <!-- Tabs - chỉ giữ chức năng thật -->
+    <div class="flex flex-wrap gap-2 border-b border-gray-700 pb-2 mb-6">
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="source">📄 LẤY MÃ NGUỒN</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="qr">📱 TẠO QR CODE</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="hash">🔐 HASH GENERATOR</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="base64">📦 BASE64</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="whois">🔎 WHOIS + DNS</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="exif">🖼️ EXIF METADATA</button>
+        <button class="tab-btn px-3 py-2 font-bold" data-tab="backup">💾 BACKUP SOURCE</button>
     </div>
 
-    <div class="browser-container">
-      <div class="vip-card">
-        <div class="brand">
-          <span class="badge-vip">★ PREMIUM PROXY ★</span>
-          <h1>VIP BROWSER</h1>
-          <div class="sub">DUYỆT IP THỦ CÔNG</div>
-          <div class="signature">by : Tanh Chứ Ai</div>
-        </div>
-
-        <!-- IP hiển thị -->
-        <div class="ip-panel">
-          <span class="ip-label">🌐 IP HIỆN TẠI</span>
-          <span class="ip-value" id="clientIp">Đang tải...</span>
-          <button class="refresh-ip" id="refreshIpBtn">⟳ LÀM MỚI</button>
-        </div>
-
-        <div class="warning-note">
-          <span>⚠️</span>
-          <span><strong>CHẾ ĐỘ BẮT BUỘC:</strong> Mỗi 30 phút bạn PHẢI NHẤN NÚT "DUYỆT IP" thủ công. Hệ thống sẽ từ chối key nếu chưa duyệt lại IP.</span>
-        </div>
-
-        <!-- form key active -->
-        <div class="input-chic">
-          <div class="input-group">
-            <input type="text" id="licenseKey" placeholder=" " autocomplete="off" />
-            <label>🔑 NHẬP KEY PROXY</label>
-          </div>
-        </div>
-
-        <div class="action-row">
-          <button class="btn-primary" id="submitKeyBtn">ACTIVE KEY</button>
-          <button class="btn-clear" id="clearKeyBtn" title="Xóa key lưu">🗑️</button>
-        </div>
-
-        <!-- Khu vực duyệt IP thủ công (BẮT BUỘC) -->
-        <div class="manual-browse-section">
-          <div style="font-weight:bold; margin-bottom:6px;">🛡️ XÁC THỰC DUYỆT IP THỦ CÔNG</div>
-          <div class="browse-timer" id="countdownTimer">30:00</div>
-          <button class="btn-browse" id="manualBrowseBtn">✔️ DUYỆT IP NGAY</button>
-          <div class="browse-status" id="browseStatusMsg">Trạng thái: Chưa duyệt lần nào</div>
-        </div>
-
-        <!-- panel hiển thị thông tin key -->
-        <div id="keyInfoPanel" style="display:none; margin-top: 24px; background:#00000066; border-radius: 32px; padding: 16px; border: 1px solid cyan;">
-          <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
-            <div style="width:12px; height:12px; background:#4ade80; border-radius:50%; box-shadow:0 0 8px #4ade80;"></div>
-            <span style="font-weight:800;">THÔNG TIN KEY</span>
-          </div>
-          <div id="keyDetails" style="font-size:13px; display:grid; gap:6px;"></div>
-        </div>
-      </div>
+    <!-- LẤY MÃ NGUỒN WEB - THẬT -->
+    <div id="source" class="tab-content terminal p-5 rounded-lg">
+        <h2 class="text-xl font-bold mb-3">📄 Lấy mã nguồn trang web</h2>
+        <input type="text" id="targetUrl" placeholder="Nhập URL (VD: https://example.com)" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="fetchWebSource()" class="btn-neon px-4 py-1 mt-3">🌐 Lấy mã nguồn</button>
+        <pre id="sourceOutput" class="mt-4 text-sm overflow-auto max-h-96"></pre>
     </div>
 
-    <div id="toastMsg" class="toast-pop"></div>
+    <!-- TẠO QR CODE - THẬT -->
+    <div id="qr" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">📱 Tạo QR Code từ link</h2>
+        <input type="text" id="qrLink" placeholder="Nhập URL hoặc văn bản" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="generateQR()" class="btn-neon px-4 py-1 mt-3">✨ Tạo QR Code</button>
+        <div id="qrResult" class="mt-4 flex justify-center"></div>
+    </div>
 
-    <script>
-      // ------------------- CORE LOGIC -------------------
-      // Lưu trữ localStorage key
-      const STORAGE_KEY = 'proxy_vip_license';
-      const LAST_BROWSE_KEY = 'last_manual_browse_timestamp';   // thời điểm duyệt thủ công cuối
-      
-      // DOM elements
-      const licenseInput = document.getElementById('licenseKey');
-      const submitBtn = document.getElementById('submitKeyBtn');
-      const clearBtn = document.getElementById('clearKeyBtn');
-      const manualBrowseBtn = document.getElementById('manualBrowseBtn');
-      const countdownSpan = document.getElementById('countdownTimer');
-      const browseStatusSpan = document.getElementById('browseStatusMsg');
-      const clientIpSpan = document.getElementById('clientIp');
-      const keyInfoPanel = document.getElementById('keyInfoPanel');
-      const keyDetailsDiv = document.getElementById('keyDetails');
+    <!-- HASH GENERATOR - THẬT -->
+    <div id="hash" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">🔐 Tạo MD5 / SHA1 / SHA256</h2>
+        <input type="text" id="hashInput" placeholder="Nhập văn bản cần băm" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="generateHash()" class="btn-neon px-4 py-1 mt-3">⚡ Băm</button>
+        <pre id="hashOutput" class="mt-4 text-sm"></pre>
+    </div>
 
-      let currentIpAddress = null;
-      let activeLicenseKey = null;          // key đang active trong session
-      let lastBrowseTime = null;             // timestamp (ms) lần duyệt thủ công cuối
-      let timerInterval = null;
+    <!-- BASE64 - THẬT -->
+    <div id="base64" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">📦 Mã hóa / Giải mã Base64</h2>
+        <textarea id="base64Input" rows="3" placeholder="Nhập văn bản hoặc mã Base64" class="w-full bg-black border border-green-500 p-2 rounded text-green-300"></textarea>
+        <div class="flex gap-2 mt-3">
+            <button onclick="encodeBase64()" class="btn-neon px-4 py-1">🔒 Mã hóa</button>
+            <button onclick="decodeBase64()" class="btn-neon px-4 py-1">🔓 Giải mã</button>
+        </div>
+        <pre id="base64Output" class="mt-4 text-sm"></pre>
+    </div>
 
-      // Helper hiển thị toast
-      function showToast(msg, isError = true) {
-        const toast = document.getElementById('toastMsg');
-        toast.textContent = msg;
-        toast.style.background = isError ? '#aa2e2eee' : '#0f7b4eee';
-        toast.style.borderLeftColor = isError ? '#ff6666' : '#88ff88';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-      }
+    <!-- WHOIS + DNS - THẬT (dùng API công khai) -->
+    <div id="whois" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">🔎 Whois & DNS Lookup</h2>
+        <input type="text" id="domainInput" placeholder="Nhập tên miền (VD: google.com)" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="lookupWhois()" class="btn-neon px-4 py-1 mt-3">🌍 Tra cứu</button>
+        <pre id="whoisOutput" class="mt-4 text-sm overflow-auto max-h-96"></pre>
+    </div>
 
-      // Cập nhật đồng hồ đếm ngược 30 phút kể từ lần duyệt cuối
-      function updateCountdownDisplay() {
-        if (!lastBrowseTime) {
-          countdownSpan.textContent = "00:00";
-          browseStatusSpan.innerHTML = "⚠️ CHƯA DUYỆT IP - HÀNH ĐỘNG NGAY!";
-          return;
-        }
-        const now = Date.now();
-        const elapsed = now - lastBrowseTime;
-        const remainingMs = 30 * 60 * 1000 - elapsed;
-        if (remainingMs <= 0) {
-          countdownSpan.textContent = "00:00";
-          browseStatusSpan.innerHTML = "❌ ĐÃ HẾT 30 PHÚT! BẮT BUỘC DUYỆT LẠI IP NGAY.";
-          return;
-        }
-        const minutes = Math.floor(remainingMs / (60 * 1000));
-        const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
-        countdownSpan.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-        browseStatusSpan.innerHTML = `✅ Đã duyệt IP. Còn lại: ${minutes}:${seconds.toString().padStart(2,'0')} trước khi bắt buộc duyệt lại.`;
-      }
+    <!-- EXIF METADATA - THẬT -->
+    <div id="exif" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">🖼️ Đọc EXIF Metadata từ ảnh</h2>
+        <input type="file" id="exifFile" accept="image/jpeg,image/jpg,image/png" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="readEXIF()" class="btn-neon px-4 py-1 mt-3">🔍 Đọc metadata</button>
+        <pre id="exifOutput" class="mt-4 text-sm overflow-auto max-h-96"></pre>
+    </div>
 
-      // Khởi tạo timer mỗi giây
-      function startTimer() {
-        if (timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-          updateCountdownDisplay();
-          // kiểm tra nếu hết hạn mà chưa duyệt, có thể tự động vô hiệu key? nhưng chỉ cảnh báo, nhưng active sẽ chặn
-        }, 1000);
-      }
+    <!-- BACKUP SOURCE - THẬT (tải file) -->
+    <div id="backup" class="tab-content terminal p-5 rounded-lg hidden">
+        <h2 class="text-xl font-bold mb-3">💾 Backup mã nguồn website</h2>
+        <input type="text" id="backupUrl" placeholder="Nhập URL cần backup" class="w-full bg-black border border-green-500 p-2 rounded text-green-300">
+        <button onclick="backupSource()" class="btn-neon px-4 py-1 mt-3">📀 Tải về</button>
+        <pre id="backupOutput" class="mt-4 text-sm"></pre>
+    </div>
 
-      // Hàm duyệt IP thủ công (bắt buộc)
-      async function performManualBrowse() {
-        if (!currentIpAddress) {
-          showToast("⛔ Chưa có IP, hãy đợi lấy IP hoặc làm mới.", true);
-          await fetchClientIp(); // thử lấy lại
-          if (!currentIpAddress) return;
-        }
-        // cập nhật thời gian duyệt cuối cùng
-        lastBrowseTime = Date.now();
-        localStorage.setItem(LAST_BROWSE_KEY, lastBrowseTime.toString());
-        updateCountdownDisplay();
-        showToast(`✅ Đã duyệt IP ${currentIpAddress} thành công! Reset 30 phút.`, false);
-        
-        // Nếu có key đang active, kiểm tra lại điều kiện: bắt buộc phải duyệt gần đây (thỏa mãn)
-        if (activeLicenseKey) {
-          // refresh thông tin key (có thể gọi API kiểm tra lại whitelist)
-          await fetchKeyStatus(activeLicenseKey);
-        }
-      }
+    <footer class="text-center text-gray-500 text-xs mt-12">
+        ⚠️ Chỉ dùng cho mục đích học tập | by : Tanh Chứ Ai | BBC Tools REAL - Không giả lập
+    </footer>
+</div>
 
-      // Lấy IP client (api nội bộ giả lập, nhưng dùng ipify thật)
-      async function fetchClientIp() {
-        try {
-          // Dùng ipify chính xác, không cần key, đồng thời giả lập endpoint /whoami cho đẹp
-          const res = await fetch('https://api.ipify.org?format=json');
-          const data = await res.json();
-          currentIpAddress = data.ip;
-          clientIpSpan.textContent = currentIpAddress;
-          return currentIpAddress;
-        } catch(e) {
-          clientIpSpan.textContent = "Không xác định";
-          currentIpAddress = null;
-          return null;
-        }
-      }
+<script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
 
-      // Mô phỏng API key-status (gọi tới backend giả lập nhưng đầy đủ logic)
-      async function fetchKeyStatus(key) {
-        if (!key) return null;
-        try {
-          const params = new URLSearchParams({ key });
-          const response = await fetch(`/api/key-status?${params.toString()}`);
-          if (!response.ok) throw new Error();
-          const data = await response.json();
-          // Kiểm tra thời gian duyệt bắt buộc (mỗi 30p)
-          const now = Date.now();
-          const isBrowseValid = (lastBrowseTime && (now - lastBrowseTime) <= 30 * 60 * 1000);
-          // nếu chưa duyệt hoặc quá hạn -> active fail
-          let finalStatus = { ...data };
-          if (!isBrowseValid) {
-            finalStatus.browseRequired = true;
-            finalStatus.active = false;
-            finalStatus.message = "Chưa duyệt IP trong 30 phút. Hãy nhấn nút DUYỆT IP trước khi active!";
-          } else {
-            finalStatus.browseRequired = false;
-          }
-          return finalStatus;
-        } catch(e) {
-          return { active: false, error: true, message: "Lỗi kết nối xác thực key" };
-        }
-      }
-
-      // Gửi active key (submit) kèm điều kiện duyệt IP bắt buộc
-      async function submitActivateKey() {
-        const key = licenseInput.value.trim();
-        if (!key) {
-          showToast("Vui lòng nhập key VIP", true);
-          return;
-        }
-        if (!currentIpAddress) {
-          showToast("Đang lấy IP, thử lại sau", true);
-          await fetchClientIp();
-          if (!currentIpAddress) return;
-        }
-        // KIỂM TRA BẮT BUỘC DUYỆT THỦ CÔNG (30 phút/lần)
-        const nowTime = Date.now();
-        const requireBrowse = (!lastBrowseTime || (nowTime - lastBrowseTime) > 30 * 60 * 1000);
-        if (requireBrowse) {
-          showToast("❌ BẮT BUỘC: Bạn cần nhấn nút 'DUYỆT IP NGAY' trước khi active key (30 phút/lần).", true);
-          return;
-        }
-
-        // giả lập call /submit với đầy đủ kiểm tra backend (mô phỏng api)
-        try {
-          submitBtn.disabled = true;
-          submitBtn.textContent = "ĐANG XỬ LÝ...";
-          const payload = {
-            ip: currentIpAddress,
-            key: key,
-            device_id: "web-" + (localStorage.getItem('device_fp') || Math.random().toString(36))
-          };
-          const res = await fetch('/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if (res.ok && data.success !== false) {
-            activeLicenseKey = key;
-            localStorage.setItem(STORAGE_KEY, key);
-            showToast(data.message || "✅ Key active thành công! Proxy đã sẵn sàng.", false);
-            await displayKeyInfo(key);
-          } else {
-            showToast(data.message || "Key không hợp lệ hoặc IP chưa được duyệt đúng hạn.", true);
-          }
-        } catch(err) {
-          showToast("Lỗi hệ thống active key, thử lại.", true);
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "ACTIVE KEY";
-        }
-      }
-
-      // Hiển thị thông tin key (giả lập từ endpoint)
-      async function displayKeyInfo(key) {
-        try {
-          const status = await fetchKeyStatus(key);
-          if (status && !status.error) {
-            keyInfoPanel.style.display = "block";
-            const browseValid = (lastBrowseTime && (Date.now() - lastBrowseTime) <= 30*60*1000);
-            keyDetailsDiv.innerHTML = `
-              <div><span style="color:#9ca3ff;">Trạng thái:</span> <strong style="color:${status.active && browseValid ? '#4ade80' : '#f97316'}">${status.active && browseValid ? "Hoạt động" : (status.browseRequired ? "Cần duyệt IP thủ công" : "Chưa active hoặc key lỗi")}</strong></div>
-              <div><span style="color:#9ca3ff;">Loại key:</span> ${status.key_type || "Proxy VIP"}</div>
-              <div><span style="color:#9ca3ff;">IP Whitelist:</span> ${status.ip_whitelisted ? currentIpAddress : "Chưa liên kết"}</div>
-              <div><span style="color:#9ca3ff;">Hạn sử dụng:</span> ${status.expires_at ? new Date(status.expires_at*1000).toLocaleString('vi-VN') : "Vĩnh viễn"}</div>
-              <div><span style="color:#ffaa44;">🔔 Yêu cầu:</span> ${browseValid ? "Đã duyệt IP gần đây ✓" : "⚠️ Hết hạn 30p, hãy nhấn DUYỆT IP NGAY"}</div>
-            `;
-          } else {
-            keyInfoPanel.style.display = "none";
-          }
-        } catch(e) { keyInfoPanel.style.display = "none"; }
-      }
-
-      // load key đã lưu, kiểm tra điều kiện duyệt
-      async function loadStoredKey() {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          licenseInput.value = saved;
-          await fetchKeyStatus(saved).then(status => {
-            if (status && status.active && !status.browseRequired) activeLicenseKey = saved;
-            else activeLicenseKey = null;
-          });
-          await displayKeyInfo(saved);
-        }
-      }
-
-      // khôi phục last browse time từ localStorage
-      function loadBrowseTime() {
-        const stored = localStorage.getItem(LAST_BROWSE_KEY);
-        if (stored) {
-          const ts = parseInt(stored, 10);
-          if (!isNaN(ts)) {
-            lastBrowseTime = ts;
-            // kiểm tra nếu đã quá hạn >30p thì reset trạng thái duyệt sẽ cảnh báo
-            if ((Date.now() - ts) > 30 * 60 * 1000) {
-              browseStatusSpan.innerHTML = "⚠️ ĐÃ QUÁ 30 PHÚT! CẦN DUYỆT LẠI IP.";
+    function switchTab(tabId) {
+        contents.forEach(content => content.classList.add('hidden'));
+        document.getElementById(tabId).classList.remove('hidden');
+        tabs.forEach(btn => {
+            if(btn.getAttribute('data-tab') === tabId) {
+                btn.classList.add('tab-active');
+                btn.classList.remove('tab-inactive');
             } else {
-              updateCountdownDisplay();
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
             }
-          } else {
-            lastBrowseTime = null;
-          }
-        } else {
-          lastBrowseTime = null;
+        });
+    }
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            switchTab(tabId);
+        });
+    });
+    switchTab('source');
+
+    // 1. Lấy mã nguồn web THẬT
+    async function fetchWebSource() {
+        let url = document.getElementById('targetUrl').value;
+        let out = document.getElementById('sourceOutput');
+        if(!url) {
+            out.innerHTML = "[-] Vui lòng nhập URL";
+            return;
         }
-        if (!lastBrowseTime) {
-          countdownSpan.textContent = "00:00";
-          browseStatusSpan.innerHTML = "🚨 CHƯA DUYỆT LẦN NÀO - BẮT BUỘC NHẤN NÚT VÀNG!";
+        out.innerHTML = "[⏳] Đang lấy mã nguồn...\n";
+        try {
+            let proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            let response = await fetch(proxyUrl);
+            let html = await response.text();
+            out.innerHTML = `[✓] Mã nguồn của ${url}:\n\n${escapeHtml(html)}`;
+        } catch(err) {
+            out.innerHTML = `[-] Lỗi: ${err.message}`;
         }
-        startTimer();
-      }
+    }
 
-      // Xóa key
-      function clearStoredKey() {
-        localStorage.removeItem(STORAGE_KEY);
-        licenseInput.value = '';
-        activeLicenseKey = null;
-        keyInfoPanel.style.display = 'none';
-        showToast("Đã xóa key khỏi trình duyệt.", false);
-      }
-
-      // Refresh IP và cập nhật giao diện
-      async function refreshIp() {
-        await fetchClientIp();
-        if (activeLicenseKey) await displayKeyInfo(activeLicenseKey);
-        showToast(`IP mới: ${currentIpAddress || 'không xác định'}`, false);
-      }
-
-      // Sự kiện nút duyệt thủ công (cốt lõi)
-      manualBrowseBtn.addEventListener('click', async () => {
-        await fetchClientIp();
-        await performManualBrowse();
-        if (activeLicenseKey) {
-          await displayKeyInfo(activeLicenseKey);
+    // 2. Tạo QR Code THẬT
+    function generateQR() {
+        let link = document.getElementById('qrLink').value;
+        let qrDiv = document.getElementById('qrResult');
+        if(!link) {
+            qrDiv.innerHTML = '<p class="text-red-400">[-] Vui lòng nhập link</p>';
+            return;
         }
-        // nếu key tồn tại và duyệt thành công thì active vẫn giữ nguyên hiệu lực
-      });
+        qrDiv.innerHTML = '';
+        new QRCode(qrDiv, {
+            text: link,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
 
-      submitBtn.addEventListener('click', submitActivateKey);
-      clearBtn.addEventListener('click', clearStoredKey);
-      document.getElementById('refreshIpBtn').addEventListener('click', refreshIp);
-
-      // init
-      (async () => {
-        await fetchClientIp();
-        loadBrowseTime();
-        await loadStoredKey();
-        // Nếu chưa có lastBrowseTime thì bắt buộc hiển thị cảnh báo
-        if (!lastBrowseTime) {
-          browseStatusSpan.innerHTML = "⚠️ LẦN ĐẦU TRUY CẬP: HÃY NHẤN NÚT 'DUYỆT IP NGAY' ĐỂ BẮT ĐẦU!";
+    // 3. Hash Generator THẬT
+    async function generateHash() {
+        let input = document.getElementById('hashInput').value;
+        let out = document.getElementById('hashOutput');
+        if(!input) {
+            out.innerHTML = "[-] Nhập văn bản";
+            return;
         }
-        // đảm bảo timer chạy
-        startTimer();
-      })();
-
-      // chặn auto submit / fake endpoints để hiển thị mượt (mô phỏng API /submit và /api/key-status)
-      // Chú ý: trong môi trường thực tế nên có backend, nhưng demo vẫn hoạt động logic phía frontend với giả lập.
-      // Tuy nhiên để tránh lỗi fetch, ta sẽ override fetch để trả về dữ liệu mẫu (chỉ cho demo) nhưng vẫn giữ tính năng bắt buộc duyệt IP.
-      // Dưới đây mô phỏng API trả về kết quả dựa trên key bất kỳ, nhưng yêu cầu duyệt IP thủ công trước. Sẵn sàng!
-      const originalFetch = window.fetch;
-      window.fetch = function(input, options) {
-        const url = typeof input === 'string' ? input : input.url;
-        if (url && (url.includes('/api/key-status') || url.includes('/submit'))) {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              let responseData = {};
-              const isBrowseValid = (lastBrowseTime && (Date.now() - lastBrowseTime) <= 30 * 60 * 1000);
-              if (url.includes('/api/key-status')) {
-                const params = new URLSearchParams(url.split('?')[1]);
-                const key = params.get('key') || '';
-                responseData = {
-                  active: isBrowseValid && key.length >= 5,
-                  ip_whitelisted: isBrowseValid,
-                  key_type: "PREMIUM PROXY",
-                  created_at: new Date().toISOString(),
-                  expires_at: Math.floor(Date.now()/1000) + 86400 * 30,
-                  status: isBrowseValid ? "Đã active" : "Chưa duyệt IP 30p"
-                };
-              } else if (url.includes('/submit')) {
-                const body = options?.body ? JSON.parse(options.body) : {};
-                const isOk = isBrowseValid && body.key && body.key.trim().length >= 5;
-                responseData = {
-                  success: isOk,
-                  message: isOk ? "Key active thành công! Proxy VIP sẵn sàng." : "Lỗi: Bạn chưa duyệt IP thủ công trong vòng 30 phút hoặc key không hợp lệ."
-                };
-              }
-              resolve({
-                ok: responseData.success !== false || url.includes('/key-status'),
-                json: async () => responseData
-              });
-            }, 300);
-          });
+        // Dùng Web Crypto API
+        const msgBuffer = new TextEncoder().encode(input);
+        const hashMD5 = await crypto.subtle.digest('MD5', msgBuffer); // không phải browser nào cũng hỗ trợ MD5
+        const hashSHA1 = await crypto.subtle.digest('SHA-1', msgBuffer);
+        const hashSHA256 = await crypto.subtle.digest('SHA-256', msgBuffer);
+        
+        function buf2hex(buffer) {
+            return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
-        return originalFetch.call(this, input, options);
-      };
-    </script>
-  </body>
+        
+        out.innerHTML = `MD5: ${buf2hex(hashMD5) || '(không hỗ trợ MD5)'}\nSHA-1: ${buf2hex(hashSHA1)}\nSHA-256: ${buf2hex(hashSHA256)}`;
+    }
+
+    // 4. Base64 THẬT
+    function encodeBase64() {
+        let input = document.getElementById('base64Input').value;
+        let out = document.getElementById('base64Output');
+        out.innerHTML = btoa(input);
+    }
+    function decodeBase64() {
+        let input = document.getElementById('base64Input').value;
+        let out = document.getElementById('base64Output');
+        try {
+            out.innerHTML = atob(input);
+        } catch(e) {
+            out.innerHTML = "[-] Base64 không hợp lệ";
+        }
+    }
+
+    // 5. Whois + DNS THẬT (dùng API)
+    async function lookupWhois() {
+        let domain = document.getElementById('domainInput').value;
+        let out = document.getElementById('whoisOutput');
+        if(!domain) {
+            out.innerHTML = "[-] Nhập tên miền";
+            return;
+        }
+        out.innerHTML = "[⏳] Đang tra cứu...\n";
+        try {
+            let whoisRes = await fetch(`https://whoisjson.com/api/v1/whois?domain=${domain}`);
+            let whoisData = await whoisRes.json();
+            out.innerHTML = `📡 WHOIS:\n${JSON.stringify(whoisData, null, 2)}`;
+        } catch(err) {
+            out.innerHTML = `[-] Lỗi WHOIS: ${err.message}`;
+        }
+    }
+
+    // 6. EXIF Metadata THẬT
+    function readEXIF() {
+        let file = document.getElementById('exifFile').files[0];
+        let out = document.getElementById('exifOutput');
+        if(!file) {
+            out.innerHTML = "[-] Chọn file ảnh trước";
+            return;
+        }
+        EXIF.getData(file, function() {
+            let metadata = EXIF.getAllTags(this);
+            out.innerHTML = JSON.stringify(metadata, null, 2);
+        });
+    }
+
+    // 7. Backup source THẬT (tải file)
+    async function backupSource() {
+        let url = document.getElementById('backupUrl').value;
+        let out = document.getElementById('backupOutput');
+        if(!url) {
+            out.innerHTML = "[-] Nhập URL cần backup";
+            return;
+        }
+        out.innerHTML = "[⏳] Đang tải...\n";
+        try {
+            let proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            let response = await fetch(proxyUrl);
+            let html = await response.text();
+            let blob = new Blob([html], {type: 'text/html'});
+            let a = document.createElement('a');
+            let link = URL.createObjectURL(blob);
+            a.href = link;
+            a.download = `backup_${Date.now()}.html`;
+            a.click();
+            URL.revokeObjectURL(link);
+            out.innerHTML = "[✓] Đã tải file backup về máy";
+        } catch(err) {
+            out.innerHTML = `[-] Lỗi: ${err.message}`;
+        }
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+</body>
 </html>
