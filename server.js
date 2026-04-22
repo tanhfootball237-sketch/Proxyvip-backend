@@ -26,7 +26,7 @@ function getClientIP(req) {
     return ip.replace('::ffff:', '').split(',')[0].trim();
 }
 
-// ========== API cho người dùng ==========
+// ========== API cho frontend ==========
 app.get('/whoami', (req, res) => {
     res.json({ ip: getClientIP(req) });
 });
@@ -117,7 +117,7 @@ app.get('/api/aim-ports', (req, res) => {
 });
 
 // ========== ADMIN API ==========
-// Cách 1: Dùng POST (cho app như Postman)
+// Tạo key bằng POST
 app.post('/admin/create-key', (req, res) => {
     const { type = 'proxy', expires_days = 30 } = req.body;
     const newKey = {
@@ -134,7 +134,7 @@ app.post('/admin/create-key', (req, res) => {
     res.json({ success: true, key: newKey });
 });
 
-// Cách 2: Dùng GET (cho trình duyệt - dễ hơn)
+// Tạo key bằng GET (dùng trình duyệt)
 app.get('/admin/create-key-quick', (req, res) => {
     const type = req.query.type || 'proxy';
     const expires_days = parseInt(req.query.days) || 30;
@@ -152,13 +152,13 @@ app.get('/admin/create-key-quick', (req, res) => {
     res.json({ success: true, key: newKey });
 });
 
-// Xem danh sách tất cả key
+// Xem danh sách key
 app.get('/admin/keys', (req, res) => {
     const db = loadDB();
     res.json(db.keys);
 });
 
-// Xóa key theo tên
+// Xóa key
 app.delete('/admin/keys/:key', (req, res) => {
     const db = loadDB();
     db.keys = db.keys.filter(k => k.key !== req.params.key);
@@ -179,7 +179,7 @@ app.post('/admin/renew', (req, res) => {
     res.json({ success: true, new_expires_at: keyData.expires_at });
 });
 
-// ========== Serve HTML files ==========
+// ========== Serve HTML ==========
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
