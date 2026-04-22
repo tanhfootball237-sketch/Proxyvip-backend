@@ -4,17 +4,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AIM Ports</title>
+    <title>PROXYVIP VN</title>
     <script>
+      // Anti-F12 DevTools
       document.addEventListener("contextmenu", e => e.preventDefault());
       document.addEventListener("keydown", e => {
         if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) || (e.ctrlKey && e.key === "u")) {
           e.preventDefault();
         }
       });
-      document.addEventListener("DOMContentLoaded", function() {
-        if (document.body) document.body.style.webkitUserSelect = "none";
-      });
+      // Block screenshots on some browsers
+      document.body.style.webkitUserSelect = "none";
     </script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,195 +26,456 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
-        color: #fff;
+        line-height: 1.4;
         position: relative;
         overflow: hidden;
+        color: #fff;
       }
       .retro-background { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
       .y2k-grid { position: absolute; inset: 0; background-image: radial-gradient(circle at 25% 25%, rgba(255,0,255,.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(0,255,255,.1) 0%, transparent 50%); }
       .grid-dots { position: absolute; inset: 0; background-image: radial-gradient(circle at 2px 2px, rgba(255,255,0,.3) 1px, transparent 0); background-size: 40px 40px; animation: gridMove 20s linear infinite; }
+      .scanner-lines { position: absolute; inset: 0; }
       .scan-line { position: absolute; width: 100%; height: 2px; animation: scanMove 8s linear infinite; }
       .scan-1 { top: 20%; background: linear-gradient(90deg, transparent, rgba(0,255,255,.8), transparent); }
       .scan-2 { top: 50%; animation-delay: -3s; background: linear-gradient(90deg, transparent, rgba(255,0,255,.8), transparent); }
       .scan-3 { top: 80%; animation-delay: -6s; background: linear-gradient(90deg, transparent, rgba(255,255,0,.8), transparent); }
-      .login-container { width: 100%; max-width: 900px; position: relative; z-index: 1; }
-      .box {
-        width: 100%;
+      .floating-orbs { position: absolute; inset: 0; }
+      .retro-orb { position: absolute; width: 120px; height: 120px; border-radius: 50%; filter: blur(2px); animation: orbFloat 15s ease-in-out infinite; }
+      .orb-1 { top: 10%; left: 10%; background: radial-gradient(circle at 30% 30%, rgba(255,0,255,.2), transparent 70%); }
+      .orb-2 { top: 70%; right: 15%; background: radial-gradient(circle at 30% 30%, rgba(0,255,255,.2), transparent 70%); animation-delay: -5s; }
+      .orb-3 { bottom: 20%; left: 20%; background: radial-gradient(circle at 30% 30%, rgba(255,255,0,.2), transparent 70%); animation-delay: -10s; }
+      .login-container { width: 100%; max-width: 450px; position: relative; z-index: 1; }
+      .future-card {
         background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.05));
         backdrop-filter: blur(20px);
         border-radius: 24px;
-        padding: 34px;
+        padding: 42px 34px;
         box-shadow: 0 25px 50px rgba(0,0,0,.3), 0 10px 30px rgba(255,0,255,.1), inset 0 1px 0 rgba(255,255,255,.2);
         position: relative;
         overflow: hidden;
       }
-      .box::before { content:''; position:absolute; inset:0; background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff); background-size: 400% 400%; animation: chromeShift 6s ease-in-out infinite; z-index: -2; }
-      .box::after { content:''; position:absolute; inset:2px; background: linear-gradient(145deg, rgba(16,16,40,.95), rgba(32,32,64,.9)); border-radius:22px; z-index:-1; }
-      h2 { text-align:center; margin-bottom: 8px; font-size: 28px; letter-spacing: 1px; }
-      .sub { text-align:center; font-size: 13px; opacity: .85; margin-bottom: 14px; text-transform: uppercase; }
-      .btn {
-        display: inline-block; padding: 10px 20px; border-radius: 10px; border: none;
-        background: linear-gradient(45deg, #b56f00, #d14a97, #8a3dd1, #b56f00);
-        background-size: 300% 300%; animation: shift 4s ease infinite;
-        color: #fff; font-weight: 900; cursor: pointer; text-decoration: none;
-        margin-top: 12px;
+      .future-card::before { content:''; position:absolute; inset:0; background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff); background-size: 400% 400%; animation: chromeShift 6s ease-in-out infinite; z-index: -2; }
+      .future-card::after { content:''; position:absolute; inset:2px; background: linear-gradient(145deg, rgba(16,16,40,.95), rgba(32,32,64,.9)); border-radius:22px; z-index:-1; }
+      .chrome-header { text-align:center; margin-bottom: 26px; }
+      .retro-logo { width: 80px; height: 80px; margin: 0 auto 16px; display:flex; align-items:center; justify-content:center; }
+      .logo-chrome { position: relative; width: 64px; height: 64px; border-radius: 50%; display:flex; align-items:center; justify-content:center; animation: logoRotate 8s linear infinite; }
+      .chrome-glow { position:absolute; inset:-4px; border-radius:50%; background: conic-gradient(#ff00ff, #00ffff, #ffff00, #ff00ff); filter: blur(8px); animation: logoRotate 4s linear infinite; }
+      .y2k-title { font-size: 2.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; display:flex; justify-content:center; gap:8px; margin-bottom: 6px; }
+      .title-chrome { background: linear-gradient(45deg, #e6e6fa, #c0c0ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+      .title-neon { background: linear-gradient(45deg, #ff00ff, #00ffff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation: neonPulse 2s ease-in-out infinite alternate; }
+      .retro-subtitle { color: rgba(255,255,255,.8); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+      .muted { color: rgba(255,255,255,.82); font-size: 13px; margin-bottom: 10px; }
+      .safari-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 1px solid rgba(250, 204, 21, .4);
+        border-radius: 10px;
+        background: linear-gradient(145deg, rgba(234,179,8,.14), rgba(180,83,9,.12));
+        box-shadow: 0 0 16px rgba(250, 204, 21, .2);
+        font-weight: 700;
       }
-      .btn:hover { opacity: 0.9; }
-      .btn-secondary {
-        background: linear-gradient(45deg, #4a5568, #718096, #4a5568);
-        background-size: 300% 300%; animation: shift 4s ease infinite;
-      }
-      table {
-        width: 100%; border-collapse: collapse; margin-top: 16px;
-      }
-      th, td {
-        padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.15);
-        font-size: 13px;
-      }
-      th {
-        background: rgba(0,0,0,.3); font-weight: 900; letter-spacing: 1px;
-        text-transform: uppercase;
-      }
-      tr:hover { background: rgba(255,255,255,.05); }
-      .status-hoat_dong { color: #4ade80; font-weight: bold; }
-      .status-bao_tri { color: #f87171; font-weight: bold; }
-      .muted { opacity: .7; font-size: 12px; }
-      .loading { text-align: center; padding: 40px; opacity: .7; }
-      .error { color: #fda4af; text-align: center; padding: 20px; }
-      .back-link {
-        display: block; text-align: center; margin-top: 16px; color: #38bdf8;
-        text-decoration: none; font-size: 13px;
-      }
-      .back-link:hover { text-decoration: underline; }
-      @keyframes shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+      .safari-note .icon { font-size: 16px; }
+      .retro-field { position: relative; margin-bottom: 20px; }
+      .field-chrome { position: relative; border: 1px solid rgba(255,255,255,.2); border-radius: 12px; overflow: hidden; transition: all .3s ease; }
+      .field-chrome:focus-within { box-shadow: 0 0 20px rgba(0,255,255,.3); border-color: rgba(0,255,255,.5); }
+      .field-chrome input { width: 100%; background: transparent; border: 0; padding: 18px 16px; color: #fff; font-size: 15px; outline: none; letter-spacing: 1px; font-family: inherit; }
+      .field-chrome input::placeholder { color: transparent; }
+      .field-chrome label { position:absolute; left:16px; top:50%; transform:translateY(-50%); color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing:1px; transition: all .3s ease; }
+      .field-chrome input:focus + label, .field-chrome input:not(:placeholder-shown) + label { top: 10px; transform: translateY(0); font-size: 11px; color: #00ffff; text-shadow: 0 0 10px rgba(0,255,255,.8); }
+      .field-hologram { position:absolute; bottom:0; left:0; width:0; height:2px; background: linear-gradient(90deg, #ff00ff, #00ffff); transition: width .3s ease; }
+      .field-chrome:focus-within .field-hologram { width: 100%; }
+      .retro-button { width: 100%; min-height: 56px; border: 0; border-radius: 12px; cursor: pointer; position: relative; overflow:hidden; background: transparent; margin-top: 6px; }
+      #btnClearKey { width: 56px; min-width: 56px; min-height: 56px; margin-top: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(127, 29, 29, .6); border: 1px solid rgba(248, 113, 113, .3); border-radius: 12px; cursor: pointer; }
+      #btnClearKey:hover { background: rgba(127, 29, 29, .85); }
+      .button-chrome { position:absolute; inset:0; background: linear-gradient(45deg, #b56f00, #d14a97, #8a3dd1, #b56f00); background-size: 400% 400%; animation: buttonShift 3s ease-in-out infinite; }
+      .button-text, .button-loader { position: absolute; inset: 0; z-index: 2; font-weight: 900; letter-spacing: 2px; color: #fff; text-transform: uppercase; display: flex; align-items: center; justify-content: center; }
+      .button-loader { opacity: 0; }
+      .retro-button.loading .button-text { opacity: 0; }
+      .retro-button.loading .button-loader { opacity: 1; }
+      .retro-button:disabled { opacity:.85; cursor: not-allowed; }
+      .y2k-spinner { width: 32px; height: 32px; position: relative; margin: 0 auto; }
+      .spinner-ring { position:absolute; border:2px solid transparent; border-radius:50%; animation: spinRing 1.8s linear infinite; }
+      .ring-1 { width:32px; height:32px; border-top-color:#ff00ff; }
+      .ring-2 { width:24px; height:24px; top:4px; left:4px; border-top-color:#00ffff; animation-delay: -.3s; }
+      .ring-3 { width:16px; height:16px; top:8px; left:8px; border-top-color:#ffff00; animation-delay: -.6s; }
+      .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -52%); width: min(92vw, 420px); padding: 14px 16px; border-radius: 12px; z-index: 9999; text-align: center; font-weight: 700; opacity: 0; pointer-events: none; box-shadow: 0 16px 40px rgba(0,0,0,.45); white-space: pre-line; }
+      .popup.show { opacity:1; transform: translate(-50%, -50%); transition: opacity .2s ease, transform .2s ease; }
+      .popup.glitch { animation: shake .35s linear, glitch .45s steps(2,end); }
       @keyframes gridMove { 0% { transform: translate(0,0);} 100% { transform: translate(40px,40px);} }
       @keyframes scanMove { 0% { left:-100%; opacity:0;} 10% {opacity:1;} 90% {opacity:1;} 100% { left:100%; opacity:0;} }
+      @keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1);} 25% { transform: translate(50px,-30px) scale(1.1);} 50% { transform: translate(-30px,-50px) scale(.9);} 75% { transform: translate(-50px,30px) scale(1.05);} }
       @keyframes chromeShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-      @media (max-width: 768px) {
-        .login-container { max-width: 100%; }
-        table { font-size: 11px; }
-        th, td { padding: 8px 6px; }
-      }
+      @keyframes logoRotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+      @keyframes neonPulse { from { filter: brightness(1);} to { filter: brightness(1.3);} }
+      @keyframes buttonShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+      @keyframes spinRing { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+      @keyframes shake { 0%{transform:translate(-50%,-50%);} 20%{transform:translate(calc(-50% - 6px),-50%);} 40%{transform:translate(calc(-50% + 6px),-50%);} 60%{transform:translate(calc(-50% - 4px),-50%);} 80%{transform:translate(calc(-50% + 4px),-50%);} 100%{transform:translate(-50%,-50%);} }
+      @keyframes glitch { 0% { filter:hue-rotate(0); clip-path: inset(0 0 0 0);} 25% { filter:hue-rotate(25deg); clip-path: inset(6% 0 55% 0);} 50% { filter:hue-rotate(-20deg); clip-path: inset(42% 0 18% 0);} 75% { filter:hue-rotate(18deg); clip-path: inset(12% 0 65% 0);} 100% { filter:hue-rotate(0); clip-path: inset(0 0 0 0);} }
     </style>
   </head>
   <body>
     <div class="retro-background">
       <div class="y2k-grid">
         <div class="grid-dots"></div>
-        <div class="scan-line scan-1"></div>
-        <div class="scan-line scan-2"></div>
-        <div class="scan-line scan-3"></div>
+        <div class="scanner-lines">
+          <div class="scan-line scan-1"></div>
+          <div class="scan-line scan-2"></div>
+          <div class="scan-line scan-3"></div>
+        </div>
+      </div>
+      <div class="floating-orbs">
+        <div class="retro-orb orb-1"></div>
+        <div class="retro-orb orb-2"></div>
+        <div class="retro-orb orb-3"></div>
       </div>
     </div>
 
     <div class="login-container">
-    <div class="box">
-      <h2>IP/PORT PROXY</h2>
-      <div class="sub">Danh sách IP/PORT Proxy</div>
+      <div class="future-card" id="futureCard">
+        <div class="chrome-header" style="position: relative;">
+          <div class="retro-logo">
+            <div class="logo-chrome">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="position:relative;z-index:2;">
+                <circle cx="18" cy="18" r="16" stroke="url(#retroGradient)" stroke-width="2"/>
+                <circle cx="18" cy="18" r="10" fill="url(#chromeGradient)"/>
+                <circle cx="18" cy="18" r="6" fill="url(#centerGradient)"/>
+                <defs>
+                  <linearGradient id="retroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff00ff"/>
+                    <stop offset="50%" style="stop-color:#00ffff"/>
+                    <stop offset="100%" style="stop-color:#ffff00"/>
+                  </linearGradient>
+                  <radialGradient id="chromeGradient"><stop offset="0%" style="stop-color:#e6e6fa"/><stop offset="100%" style="stop-color:#c0c0ff"/></radialGradient>
+                  <radialGradient id="centerGradient"><stop offset="0%" style="stop-color:#ffffff"/><stop offset="100%" style="stop-color:#f0f0ff"/></radialGradient>
+                </defs>
+              </svg>
+              <div class="chrome-glow"></div>
+            </div>
+          </div>
+          <h1 class="y2k-title"><span class="title-chrome">PROXY</span><span class="title-neon">VIP</span></h1>
+          <p class="retro-subtitle">WEB ACTIVE KEY PROXY VIP VN</p>
 
-      <button class="btn" onclick="location.reload()">Tải lại</button>
-      <a href="/" class="btn btn-secondary">Quay lại</a>
+          <!-- Button ở góc phải trên cùng, bên trên title -->
+          <button type="button" id="aimPortsBtn" style="
+            position: absolute;
+            top: -35px;
+            right: -20px;
+            background: linear-gradient(45deg, #00ff88, #00ccff, #00ff88);
+            color: #000; font-weight: 900;
+            padding: 8px 16px; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
+            z-index: 10;
+          ">XEM IP/PORTS</button>
+        </div>
 
-      <div id="loading" class="loading">Đang tải dữ liệu...</div>
-      <div id="error" class="error" style="display:none;"></div>
-      <div id="tableWrap" style="overflow-x:auto; margin-top:16px; display:none;">
-        <table>
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>IP</th>
-              <th>Port</th>
-              <th>Loại proxy</th>
-              <th>Link .pem</th>
-              <th>Trạng thái</th>
-            </tr>
-          </thead>
-          <tbody id="aim-tbody"></tbody>
-        </table>
+        <div class="muted">IP của bạn: <strong id="ip" style="color:#4ade80">...</strong></div>
+        <div class="muted safari-note"><span class="icon">⚠️</span><span>Lưu ý quan trọng: Vui lòng mở bằng Safari. Hãy duyệt IP mỗi ngày trước khi vào game.</span></div>
+
+        <form id="requestForm" novalidate>
+          <div class="retro-field">
+            <div class="field-chrome">
+              <input id="license" name="license" placeholder=" " inputmode="text" autocapitalize="none" autocomplete="off" required />
+              <label for="license">Key Của Bạn</label>
+              <div class="field-hologram"></div>
+            </div>
+          </div>
+
+          <div class="row" style="display:flex; gap:10px;">
+            <button id="btnSubmit" class="retro-button" type="submit" style="flex:1;">
+              <div class="button-chrome"></div>
+              <span id="btnSubmitText" class="button-text">GỬI KEY ACTIVE</span>
+              <div class="button-loader">
+                <div class="y2k-spinner">
+                  <div class="spinner-ring ring-1"></div>
+                  <div class="spinner-ring ring-2"></div>
+                  <div class="spinner-ring ring-3"></div>
+                </div>
+              </div>
+            </button>
+            <button id="btnClearKey" class="retro-button" type="button" title="Xóa key đã lưu" style="min-width:52px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            </button>
+          </div>
+        </form>
+        <div id="keyStatusPanel" style="display:none; margin-top:18px; padding:14px 16px; border-radius:12px; border:1px solid rgba(74,222,128,.35); background:rgba(6,78,59,.35);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <svg id="keyStatusIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+            <span id="keyStatusTitle" style="color:#4ade80; font-weight:700; font-size:15px;">KEY ĐANG HOẠT ĐỘNG</span>
+          </div>
+          <div id="ksIpMsg" style="font-size:13px; font-weight:600; margin-bottom:10px;"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px;">
+            <div style="color:#94a3b8;">Trạng thái:</div><div id="ksStatus" style="color:#4ade80; font-weight:600;">—</div>
+            <div style="color:#94a3b8;">Loại key:</div><div id="ksType" style="color:#e2e8f0;">—</div>
+            <div style="color:#94a3b8;">Ngày kích hoạt:</div><div id="ksCreated" style="color:#e2e8f0;">—</div>
+            <div style="color:#94a3b8;">Ngày hết hạn:</div><div id="ksExpires" style="color:#e2e8f0;">—</div>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
+
+    <div id="popup" class="popup"></div>
 
     <script>
-      const tbody = document.getElementById('aim-tbody');
-      const loadingEl = document.getElementById('loading');
-      const errorEl = document.getElementById('error');
-      const tableWrapEl = document.getElementById('tableWrap');
+      const ipEl = document.getElementById('ip');
+      const formEl = document.getElementById('requestForm');
+      const cardEl = document.getElementById('futureCard');
+      const btnSubmit = document.getElementById('btnSubmit');
+      const popupEl = document.getElementById('popup');
+      const licenseInput = document.getElementById('license');
+      const btnTextEl = document.getElementById('btnSubmitText');
+      const btnClearKey = document.getElementById('btnClearKey');
 
-      function fmtDate(iso) {
-        if (!iso) return '-';
-        const d = new Date(iso);
-        return d.toLocaleString('vi-VN');
-      }
+      const SAVED_KEY = 'pv2_license_key';
 
-      function renderTable(items) {
-        tbody.innerHTML = '';
-        items.forEach((item, idx) => {
-          const tr = document.createElement('tr');
-          const statusClass = item.status === 'hoat_dong' ? 'status-hoat_dong' : 'status-bao_tri';
-          tr.innerHTML = `
-            <td>${idx + 1}</td>
-            <td class="clickable" data-copy="${item.ip || ''}" title="Nhấn để sao chép">${item.ip || '-'}</td>
-            <td class="clickable" data-copy="${item.port || ''}" title="Nhấn để sao chép">${item.port || '-'}</td>
-            <td>${item.proxy_type || '-'}</td>
-            <td><a href="${item.link_pem || '#'}" target="_blank" style="color:#38bdf8">Link</a></td>
-            <td class="${statusClass}">${item.status === 'hoat_dong' ? 'Hoạt động' : 'Bảo trì'}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        // Add click-to-copy functionality
-        tbody.querySelectorAll('.clickable').forEach(cell => {
-          cell.style.cursor = 'pointer';
-          cell.addEventListener('click', async () => {
-            const text = cell.getAttribute('data-copy');
-            try {
-              await navigator.clipboard.writeText(text);
-              const original = cell.textContent;
-              cell.textContent = 'Đã sao chép!';
-              cell.style.background = 'rgba(0,255,136,0.2)';
-              setTimeout(() => {
-                cell.textContent = original;
-                cell.style.background = '';
-              }, 1500);
-            } catch (err) {
-              alert('Sao chép thất bại: ' + err);
-            }
-          });
-        });
-      }
-
-      async function loadAimPorts() {
+      function loadSavedKey() {
         try {
-          loadingEl.style.display = 'block';
-          errorEl.style.display = 'none';
-          tableWrapEl.style.display = 'none';
-          const res = await fetch('/api/aim-ports');
-          if (res.status === 401 || res.status === 302) {
-            window.location.href = '/reset-key?source=v3';
-            return;
+          const saved = localStorage.getItem(SAVED_KEY);
+          if (saved && licenseInput) {
+            licenseInput.value = saved;
+            if (btnTextEl) btnTextEl.textContent = 'ACTIVE IP';
           }
-          const data = await res.json();
-          if (!res.ok || data.message) {
-            throw new Error(data.message || 'Lỗi tải dữ liệu');
-          }
-          const items = data.items || [];
-          loadingEl.style.display = 'none';
-          if (items.length === 0) {
-            errorEl.textContent = 'Chưa có AIM ports nào.';
-            errorEl.style.display = 'block';
-          } else {
-            renderTable(items);
-            tableWrapEl.style.display = 'block';
-          }
+        } catch (e) {}
+      }
+
+      function saveKey(key) {
+        try { localStorage.setItem(SAVED_KEY, key); } catch (e) {}
+      }
+
+      loadSavedKey();
+
+      function loadKeyStatus(key) {
+        const panel = document.getElementById('keyStatusPanel');
+        const titleEl = document.getElementById('keyStatusTitle');
+        const iconEl = document.getElementById('keyStatusIcon');
+        const ksStatus = document.getElementById('ksStatus');
+        const ksCreated = document.getElementById('ksCreated');
+        const ksExpires = document.getElementById('ksExpires');
+        if (!panel) return;
+        fetch('/api/key-status?key=' + encodeURIComponent(key || ''))
+          .then(r => r.json())
+          .then(d => {
+            panel.style.display = 'block';
+            const ksIpMsg = document.getElementById('ksIpMsg');
+            const myIP = ipEl ? ipEl.textContent : '';
+            if (d.ip_whitelisted) {
+              ksIpMsg.textContent = 'IP của bạn đã active.';
+              ksIpMsg.style.color = '#4ade80';
+            } else if (d.active) {
+              ksIpMsg.textContent = 'IP của bạn cần được active.';
+              ksIpMsg.style.color = '#fbbf24';
+            } else {
+              ksIpMsg.textContent = '';
+            }
+
+            // Kiểm tra hết hạn
+            const now = Math.floor(Date.now() / 1000);
+            const isExpired = d.expires_at && d.expires_at < now;
+
+            if (isExpired) {
+              // Key đã hết hạn
+              titleEl.textContent = 'KEY ĐÃ HẾT HẠN';
+              titleEl.style.color = '#f87171';
+              iconEl.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>';
+              iconEl.setAttribute('stroke', '#f87171');
+              ksStatus.textContent = 'Hết hạn';
+              ksStatus.style.color = '#f87171';
+            } else {
+              // Key còn hạn
+              titleEl.textContent = 'KEY ĐANG HOẠT ĐỘNG';
+              titleEl.style.color = '#4ade80';
+              iconEl.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>';
+              iconEl.setAttribute('stroke', '#4ade80');
+              if (d.active) {
+                if (d.ip_whitelisted) {
+                  ksStatus.textContent = 'Hoạt động';
+                  ksStatus.style.color = '#4ade80';
+                } else {
+                  ksStatus.textContent = 'Không Hoạt Động';
+                  ksStatus.style.color = '#fbbf24';
+                }
+              } else {
+                ksStatus.textContent = d.status || 'Chưa kích hoạt';
+                ksStatus.style.color = '#fbbf24';
+              }
+            }
+
+            ksCreated.textContent = d.created_at ? new Date(d.created_at).toLocaleString('vi-VN') : '—';
+            ksExpires.textContent = d.expires_at ? new Date(d.expires_at * 1000).toLocaleString('vi-VN') : 'Không giới hạn';
+            ksType.textContent = d.key_type || '—';
+          })
+          .catch(() => {
+            panel.style.display = 'none';
+          });
+      }
+
+      const saved = (function() { try { return localStorage.getItem(SAVED_KEY); } catch(e) { return null; } })();
+      if (saved) loadKeyStatus(saved);
+
+      btnClearKey && btnClearKey.addEventListener('click', () => {
+        try { localStorage.removeItem(SAVED_KEY); } catch (e) {}
+        if (licenseInput) licenseInput.value = '';
+        if (btnTextEl) btnTextEl.textContent = 'GỬI KEY ACTIVE';
+        const panel = document.getElementById('keyStatusPanel');
+        if (panel) panel.style.display = 'none';
+        showPopup('Đã xóa key.', false);
+      });
+
+      async function sha256Hex(text) {
+        const enc = new TextEncoder().encode(text);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        const bytes = new Uint8Array(buf);
+        return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      function collectFingerprintParts() {
+        const nav = navigator || {};
+        const scr = window.screen || {};
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        return [
+          nav.userAgent || '',
+          nav.platform || '',
+          nav.vendor || '',
+          nav.language || '',
+          (nav.languages || []).join(','),
+          String(nav.hardwareConcurrency || ''),
+          String(nav.deviceMemory || ''),
+          String(nav.maxTouchPoints || ''),
+          String(scr.width || ''),
+          String(scr.height || ''),
+          String(scr.colorDepth || ''),
+          String(window.devicePixelRatio || ''),
+          tz,
+        ].join('|');
+      }
+
+      async function getDeviceId() {
+        const key = 'device_fingerprint_v2';
+        const oldKey = 'device_id';
+        const existing = localStorage.getItem(key);
+        if (existing) return existing;
+
+        try {
+          if (!window.crypto || !window.crypto.subtle) throw new Error('crypto-unavailable');
+          const raw = collectFingerprintParts();
+          const hash = await sha256Hex(raw);
+          const id = 'fp-' + hash.slice(0, 48);
+          localStorage.setItem(key, id);
+          if (localStorage.getItem(oldKey)) localStorage.removeItem(oldKey);
+        return id;
         } catch (e) {
-          loadingEl.style.display = 'none';
-          errorEl.textContent = 'Không thể tải dữ liệu: ' + e.message;
-          errorEl.style.display = 'block';
+          let fallback = localStorage.getItem(oldKey);
+          if (!fallback) {
+            fallback = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+            localStorage.setItem(oldKey, fallback);
+          }
+          return fallback;
         }
       }
 
-      loadAimPorts();
+      async function getIP() {
+        try {
+          const res = await fetch('/whoami');
+          const data = await res.json();
+          if (data && data.ip) {
+            ipEl.textContent = data.ip;
+            return data.ip;
+          }
+        } catch (e) {}
+        try {
+          const res = await fetch('https://api.ipify.org?format=json');
+          const data = await res.json();
+          ipEl.textContent = data.ip || 'N/A';
+          return data.ip;
+        } catch (e) {
+          ipEl.textContent = 'Không lấy được IP';
+          return null;
+        }
+      }
+
+      let currentIP = null;
+      getIP().then(ip => currentIP = ip);
+
+      function showPopup(text, isError = true) {
+        if (!popupEl) return;
+        popupEl.textContent = text;
+        popupEl.style.background = isError ? 'rgba(127, 29, 29, .95)' : 'rgba(6, 78, 59, .95)';
+        popupEl.style.borderColor = isError ? 'rgba(248, 113, 113, .45)' : 'rgba(74, 222, 128, .45)';
+        popupEl.style.color = isError ? '#fee2e2' : '#dcfce7';
+        popupEl.classList.remove('show', 'glitch');
+        requestAnimationFrame(() => {
+          popupEl.classList.add('show');
+          if (isError) popupEl.classList.add('glitch');
+        });
+        const popupDuration = isError ? 4000 : 5500;
+        clearTimeout(window.__popupTimer);
+        window.__popupTimer = setTimeout(() => {
+          popupEl.classList.remove('show', 'glitch');
+        }, popupDuration);
+      }
+
+      function triggerMatrixGlitch() {
+        if (!cardEl) return;
+        cardEl.style.filter = 'hue-rotate(90deg) saturate(1.4)';
+        cardEl.style.transform = 'translate(1px, -1px)';
+        setTimeout(() => {
+          cardEl.style.filter = '';
+          cardEl.style.transform = '';
+        }, 110);
+      }
+
+      setInterval(() => {
+        if (Math.random() < 0.15) triggerMatrixGlitch();
+      }, 3000);
+
+      async function submitRequest() {
+        const license = (licenseInput.value || '').trim();
+
+        if (!license) {
+          showPopup('Vui lòng nhập key.', true);
+          return;
+        }
+        if (!currentIP) {
+          showPopup('Không lấy được IP. Thử lại.', true);
+          return;
+        }
+
+        try {
+          btnSubmit.disabled = true;
+          btnSubmit.classList.add('loading');
+          const body = { ip: currentIP, key: license, device_id: await getDeviceId() };
+          const res = await fetch('/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          if (res.ok) {
+            saveKey(license);
+            showPopup(data.message || 'Đã gửi.', false);
+            if (btnTextEl) btnTextEl.textContent = 'ACTIVE IP';
+            loadKeyStatus(license);
+          } else {
+            showPopup(data.message || 'Không thể gửi.', true);
+          }
+        } catch (e) {
+          showPopup('Lỗi gửi yêu cầu.', true);
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.classList.remove('loading');
+        }
+      }
+
+      document.getElementById('aimPortsBtn')?.addEventListener('click', () => {
+        window.location.href = '/aim-ports';
+      });
+
+      formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await submitRequest();
+      });
     </script>
   </body>
 </html>
