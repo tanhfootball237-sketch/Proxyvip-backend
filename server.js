@@ -26,6 +26,7 @@ function getClientIP(req) {
     return ip.replace('::ffff:', '').split(',')[0].trim();
 }
 
+// ========== API cho người dùng ==========
 app.get('/whoami', (req, res) => {
     res.json({ ip: getClientIP(req) });
 });
@@ -115,6 +116,8 @@ app.get('/api/aim-ports', (req, res) => {
     res.json({ items: items });
 });
 
+// ========== ADMIN API ==========
+// Cách 1: Dùng POST (cho app như Postman)
 app.post('/admin/create-key', (req, res) => {
     const { type = 'proxy', expires_days = 30 } = req.body;
     const newKey = {
@@ -131,7 +134,52 @@ app.post('/admin/create-key', (req, res) => {
     res.json({ success: true, key: newKey });
 });
 
-// Serve HTML files trực tiếp (không cần thư mục public)
+// Cách 2: Dùng GET (cho trình duyệt - dễ hơn)
+app.get('/admin/create-key-quick', (req, res) => {
+    const type = req.query.type || 'proxy';
+    const expires_days = parseInt(req.query.days) || 30;
+    const newKey = {
+        key: 'KEY-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+        type: type,
+        created_at: new Date().toISOString(),
+        expires_at: Math.floor(Date.now() / 1000) + expires_days * 86400,
+        whitelisted_ips: [],
+        active: true
+    };
+    const db = loadDB();
+    db.keys.push(newKey);
+    saveDB(db);
+    res.json({ success: true, key: newKey });
+});
+
+// Xem danh sách tất cả key
+app.get('/admin/keys', (req, res) => {
+    const db = loadDB();
+    res.json(db.keys);
+});
+
+// Xóa key theo tên
+app.delete('/admin/keys/:key', (req, res) => {
+    const db = loadDB();
+    db.keys = db.keys.filter(k => k.key !== req.params.key);
+    saveDB(db);
+    res.json({ success: true });
+});
+
+// Gia hạn key
+app.post('/admin/renew', (req, res) => {
+    const { key, add_days } = req.body;
+    const db = loadDB();
+    const keyData = db.keys.find(k => k.key === key);
+    if (!keyData) return res.status(404).json({ error: 'Không tìm thấy key' });
+    
+    const currentExp = keyData.expires_at || Math.floor(Date.now() / 1000);
+    keyData.expires_at = currentExp + add_days * 86400;
+    saveDB(db);
+    res.json({ success: true, new_expires_at: keyData.expires_at });
+});
+
+// ========== Serve HTML files ==========
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
